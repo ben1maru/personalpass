@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="332.0" style="-fx-background-color: #7EB3FF;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="personalPass.LogIn">
+  <columnConstraints>
+      <ColumnConstraints maxWidth="0.0" minWidth="0.0" prefWidth="0.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.0" minWidth="10.0" prefWidth="48.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="280.0" minWidth="10.0" prefWidth="200.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="145.0" minWidth="10.0" prefWidth="52.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="282.0" minHeight="10.0" prefHeight="82.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="338.0" minHeight="0.0" prefHeight="211.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="198.0" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label prefHeight="33.0" prefWidth="181.0" text="Авторизація" GridPane.columnIndex="2">
+         <font>
+            <Font name="Arial Bold" size="29.0" />
+         </font>
+         <GridPane.margin>
+            <Insets left="15.0" right="5.0" />
+         </GridPane.margin>
+      </Label>
+      <AnchorPane prefHeight="204.0" prefWidth="196.0" style="-fx-background-color: #AFCFEA; -fx-background-radius: 20;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="loginIn" contentDisplay="CENTER" layoutX="69.0" layoutY="122.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="74.0" style="-fx-border-radius: 10; -fx-background-radius: 10; -fx-background-color: #A854A5;" text="Увійти">
+               <effect>
+                  <DropShadow>
+                     <color>
+                        <Color red="0.3979349434375763" green="0.5131579041481018" blue="0.05226608365774155" />
+                     </color>
+                  </DropShadow>
+               </effect>
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <PasswordField fx:id="passTxt" alignment="CENTER" layoutX="15.0" layoutY="80.0" promptText="Пароль" style="-fx-border-radius: 40; -fx-background-radius: 40; -fx-border-color: black; -fx-background-color: #D7FFFE;" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></PasswordField>
+            <TextField fx:id="logtxt" alignment="CENTER" layoutX="15.0" layoutY="29.0" prefHeight="26.0" prefWidth="152.0" promptText="Логін" style="-fx-border-radius: 30; -fx-background-radius: 30; -fx-background-color: #D7FFFE; -fx-border-color: black;" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font>
+            </TextField>
+            <Button fx:id="registration" layoutX="52.0" layoutY="164.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="108.0" style="-fx-background-color: #AFCFEA; -fx-background-radius: 20; -fx-underline: true;" text="Реєстрація" textAlignment="CENTER">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font></Button>
+         </children>
+      </AnchorPane>
+   </children>
+</GridPane>
