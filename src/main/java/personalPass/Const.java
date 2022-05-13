@@ -8,6 +8,7 @@ public class Const {
     public static final String PPM_LOGIN = "`login`";
 
     public static User user = null;
+    public static UserTable userTable = null;
 
 
 }

@@ -1,6 +1,8 @@
 package personalPass;
 
 import java.sql.*;
+
+import javafx.scene.control.Alert;
 import org.apache.commons.codec.digest.DigestUtils;
 
 
@@ -22,19 +24,27 @@ public class DatabaseHandler {
                 Const.PPM_USERNAME + "," + Const.PPM_LOGIN + "," +
                 Const.PPM_PASSWORD + ")" + "VALUES(?,?,?)";
 
-
         try {
             PreparedStatement prSt = getDbConnection().prepareStatement(insert);
             prSt.setString(1, user.getNameUser());
             prSt.setString(2, user.getLogin());
             prSt.setString(3, DigestUtils.sha1Hex(user.getPassword()));
             prSt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Успіх");
+            alert.setContentText("Дані було успішно додано");
+            alert.show();
+        } catch (Exception e) {
+            if (e instanceof SQLException)
+            if (e.getMessage().equals("Duplicate entry '" + user.getLogin() + "' for key 'PRIMARY'")) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setHeaderText("Помилка");
+                alert.setContentText("У вас вже є такий запис");
+                alert.show();
+            }
             e.printStackTrace();
         }
-    }
+        }
 
     public User getUser(String login, String password) {
         User user = null;

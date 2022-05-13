@@ -36,6 +36,8 @@ public class progressMenu implements Initializable {
     @FXML
     private TableColumn<UserTable, String> tableWebOrAppCol;
     @FXML
+    private TableColumn<UserTable, String> tableNameTypeCol;
+    @FXML
     private TableColumn<UserTable, String> tableLoginCol;
     @FXML
     private TableColumn<UserTable, String> tablePasswordCol;
@@ -148,6 +150,8 @@ public void Edit(){
         isWebOr.setText(tableWebOrAppCol.getCellData(index));
         isLoginTxt.setText(tableLoginCol.getCellData(index));
         isPasswordTxt.setText(tablePasswordCol.getCellData(index));
+        typesChoiceBox.setValue(tableNameTypeCol.getCellData(index));
+
     }
     public void DeleteUser(){
         conn=mySqlConnect.ConnectDb();
@@ -161,5 +165,12 @@ public void Edit(){
         }catch (Exception e){
             JOptionPane.showMessageDialog(null,e);
         }
+    }
+
+    public void Clean() {
+        isWebOr.setText("");
+        isLoginTxt.setText("");
+        isPasswordTxt.setText("");
+        typesChoiceBox.setValue("");
     }
 }

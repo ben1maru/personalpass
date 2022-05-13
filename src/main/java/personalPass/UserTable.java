@@ -38,19 +38,26 @@ public class UserTable {
     public void setId_user(int id_user) {
         this.id_user.set(id_user);
     }
+
     public StringProperty website_or_app = new SimpleStringProperty();
     public StringProperty login = new SimpleStringProperty();
     public StringProperty password = new SimpleStringProperty();
     public IntegerProperty id_pass=new SimpleIntegerProperty();
     public IntegerProperty id_user = new SimpleIntegerProperty();
+    public StringProperty name_type = new SimpleStringProperty();
 
-    public UserTable(int id_pass,int id_user,String website_or_app, String login, String password) {
+    public void setName_type(String name_type) {
+        this.name_type.set(name_type);
+    }
 
+    public UserTable(int id_pass, int id_user, String website_or_app, String login, String name_type, String password) {
         this.id_pass.setValue(id_pass);
         this.id_user.setValue(id_user);
         this.website_or_app.setValue(website_or_app);
         this.login.setValue(login);
+        this.name_type.setValue(name_type);
         this.password.setValue(password);
+
     }
 
 

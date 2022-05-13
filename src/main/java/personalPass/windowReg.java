@@ -67,12 +67,13 @@ public class windowReg {
         String userNameReg = userName.getText();
         String passwordReg = password.getText();
         String loginReg = login.getText();
+        String returnPass = returnPassword.getText();
         if (!password.getText().equals(returnPassword.getText())) {
             JOptionPane.showMessageDialog(null, "Паролі не співпадають");
             return;
         } else {
             ArrayList<String> arrList = new ArrayList<String>();
-            arrList.addAll(Arrays.asList(userNameReg, passwordReg, loginReg));
+            arrList.addAll(Arrays.asList(userNameReg, passwordReg, loginReg,returnPass));
 
             if (arrList.stream().anyMatch(text -> text.equals(""))) {
                 JOptionPane.showMessageDialog(null, "Введіть всі значення");
@@ -80,7 +81,6 @@ public class windowReg {
             }
             User user = new User(userNameReg, loginReg, passwordReg);
             databaseHandler.signUpUser(user);
-            JOptionPane.showMessageDialog(null,"Користувача зареєстровано!");
             userName.setText("");
             password.setText("");
             returnPassword.setText("");
