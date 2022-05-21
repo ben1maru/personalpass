@@ -7,11 +7,17 @@ public class UserTable {
     public StringProperty website_or_appProperty() {
         return website_or_app;
     }
+
     public StringProperty loginProperty() {
         return login;
     }
+
     public StringProperty passwordProperty() {
         return password;
+    }
+
+    public StringProperty nameTypeProperty() {
+        return name_type;
     }
 
 
@@ -42,7 +48,7 @@ public class UserTable {
     public StringProperty website_or_app = new SimpleStringProperty();
     public StringProperty login = new SimpleStringProperty();
     public StringProperty password = new SimpleStringProperty();
-    public IntegerProperty id_pass=new SimpleIntegerProperty();
+    public IntegerProperty id_pass = new SimpleIntegerProperty();
     public IntegerProperty id_user = new SimpleIntegerProperty();
     public StringProperty name_type = new SimpleStringProperty();
 

@@ -1,6 +1,16 @@
 package personalPass;
 
 
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -8,20 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-
-import javax.swing.*;
 
 public class progressMenu implements Initializable {
 
@@ -48,6 +44,9 @@ public class progressMenu implements Initializable {
     private Button addPasswordBtn;
 
     @FXML
+    private ChoiceBox<String> typesChoiceBox;
+
+    @FXML
     private Button isUpdateBtn;
 
     @FXML
@@ -63,35 +62,47 @@ public class progressMenu implements Initializable {
     private TextField isPasswordTxt;
 
 
-
     //////////////////
     List<UserTable> listM;
-    int index = -1;
-    Connection conn = null;
+    UserTable selectedUserTable = null;
+    Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
     PreparedStatement pst = null;
 
     @FXML
-    private void addPass(){
-        conn=mySqlConnect.ConnectDb();
-        String sql = "insert into data_password (id_user,website_or_app,login,password)values(?,?,?,?)";
-        try{
-            pst= conn.prepareStatement(sql);
+    private void addPass() {
+        if (isWebOr.getText().equals("") ||
+                isLoginTxt.getText().equals("") ||
+                isPasswordTxt.getText().equals("") ||
+                typesChoiceBox.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Ви не ввели всі потрібні дані");
+            alert.show();
+            return;
+        }
+
+        conn = mySqlConnect.ConnectDb();
+        String sql = "insert into data_password (id_user,website_or_app,login,password, name_type)values(?,?,?,?,?)";
+        try {
+            pst = conn.prepareStatement(sql);
             pst.setInt(1, Const.user.getUserId());
-           pst.setString(2,isWebOr.getText());
-            pst.setString(3,isLoginTxt.getText());
-            pst.setString(4,isPasswordTxt.getText());
+            pst.setString(2, isWebOr.getText());
+            pst.setString(3, isLoginTxt.getText());
+            pst.setString(4, isPasswordTxt.getText());
+            pst.setString(5, typesChoiceBox.getValue());
             pst.execute();
 
-            JOptionPane.showMessageDialog(null,"Пароль доданий");
+            JOptionPane.showMessageDialog(null, "Пароль доданий");
             UpdateTable();
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(null,e);
+            Clean();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
         }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        typesChoiceBox.getItems().addAll(Types.getAllTypes());
         UpdateTable();
         addPasswordBtn.setOnAction(actionEvent -> {
             addPass();
@@ -106,9 +117,9 @@ public class progressMenu implements Initializable {
             Stage stage = (Stage) isBackBtn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("LogIn.fxml"));
-            try{
+            try {
                 loader.load();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             Parent root = loader.getRoot();
@@ -116,35 +127,44 @@ public class progressMenu implements Initializable {
         });
 
     }
-    public void UpdateTable(){
+
+    public void UpdateTable() {
         tableWebOrAppCol.setCellValueFactory(param -> param.getValue().website_or_appProperty());
         tableLoginCol.setCellValueFactory(param -> param.getValue().loginProperty());
         tablePasswordCol.setCellValueFactory(param -> param.getValue().passwordProperty());
-        listM =mySqlConnect.getDataUsersTable();
+        tableNameTypeCol.setCellValueFactory(param -> param.getValue().nameTypeProperty());
+        listM = mySqlConnect.getDataUsersTable();
         tablePassword.getItems().clear();
         tablePassword.getItems().addAll(listM);
         ////////////////////////////
     }
-public void Edit(){
+
+    public void Edit() {
         try {
-            conn= mySqlConnect.ConnectDb();
-            String value1 = isWebOr.getText();
-            String value2 = isLoginTxt.getText();
-            String value3 = isPasswordTxt.getText();
-
-            String sql = "update data_password set website_or_app= '"+ value1 +"',login= '"+value2+"',password= '"+ value3+"' where  website_or_app= '"+ value1 +"' ";
+            if (selectedUserTable == null) {
+                return;
+            }
+            conn = mySqlConnect.ConnectDb();
+            String sql = "update data_password set website_or_app=?,login=?,password=?,name_type=? where  id_password=?";
             pst = conn.prepareStatement(sql);
-            pst.execute();
+            pst.setString(1, isWebOr.getText());
+            pst.setString(2, isLoginTxt.getText());
+            pst.setString(3, isPasswordTxt.getText());
+            pst.setString(4, typesChoiceBox.getValue());
+            pst.setInt(5, selectedUserTable.id_pass.getValue());
 
-            JOptionPane.showMessageDialog(null,"Дані оновлено");
+            pst.execute();
+            JOptionPane.showMessageDialog(null, "Дані оновлено");
             UpdateTable();
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(null,e);
+            Clean();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-}
-    public void getSelect(javafx.scene.input.MouseEvent mouseEvent) {
-        index = tablePassword.getSelectionModel().getSelectedIndex();
-        if(index <= -1){
+    }
+
+    public void getSelect(MouseEvent mouseEvent) {
+        selectedUserTable = tablePassword.getSelectionModel().getSelectedItem();
+        if (selectedUserTable == null) {
             return;
         }
         isWebOr.setText(tableWebOrAppCol.getCellData(selectedUserTable));
