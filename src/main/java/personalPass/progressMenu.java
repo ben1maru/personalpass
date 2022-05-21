@@ -147,25 +147,30 @@ public void Edit(){
         if(index <= -1){
             return;
         }
-        isWebOr.setText(tableWebOrAppCol.getCellData(index));
-        isLoginTxt.setText(tableLoginCol.getCellData(index));
-        isPasswordTxt.setText(tablePasswordCol.getCellData(index));
-        typesChoiceBox.setValue(tableNameTypeCol.getCellData(index));
-
+        isWebOr.setText(tableWebOrAppCol.getCellData(selectedUserTable));
+        isLoginTxt.setText(tableLoginCol.getCellData(selectedUserTable));
+        isPasswordTxt.setText(tablePasswordCol.getCellData(selectedUserTable));
+        typesChoiceBox.setValue(tableNameTypeCol.getCellData(selectedUserTable));
     }
-    public void DeleteUser(){
-        conn=mySqlConnect.ConnectDb();
-        String sql = "delete from data_password where website_or_app = ? ";
+
+    public void DeleteUser() {
+        if (selectedUserTable == null) {
+            return;
+        }
+        String sql = "delete from data_password where id_password = ? ";
         try {
             pst = conn.prepareStatement(sql);
-            pst.setString(1,isWebOr.getText());
+            pst.setInt(1, selectedUserTable.id_pass.getValue());
             pst.execute();
-            JOptionPane.showMessageDialog(null,"Видалено");
+            JOptionPane.showMessageDialog(null, "Видалено");
             UpdateTable();
-        }catch (Exception e){
-            JOptionPane.showMessageDialog(null,e);
+            Clean();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+            e.printStackTrace();
         }
     }
+
 
     public void Clean() {
         isWebOr.setText("");

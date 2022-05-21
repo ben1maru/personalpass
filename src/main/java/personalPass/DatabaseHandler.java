@@ -13,7 +13,7 @@ public class DatabaseHandler {
     public Connection getDbConnection() throws ClassNotFoundException, SQLException {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
-        dbConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/personal_password_data?useUnicode=true&characterEncoding=utf8","root", "");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/personal_password_data?useUnicode=true&characterEncoding=utf8", "root", "");
         System.out.println(dbConnection);
         return dbConnection;
 
@@ -36,15 +36,15 @@ public class DatabaseHandler {
             alert.show();
         } catch (Exception e) {
             if (e instanceof SQLException)
-            if (e.getMessage().equals("Duplicate entry '" + user.getLogin() + "' for key 'PRIMARY'")) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setHeaderText("Помилка");
-                alert.setContentText("У вас вже є такий запис");
-                alert.show();
-            }
+                if (e.getMessage().equals("Duplicate entry '" + user.getLogin() + "' for key 'PRIMARY'")) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setHeaderText("Помилка");
+                    alert.setContentText("У вас вже є такий запис");
+                    alert.show();
+                }
             e.printStackTrace();
         }
-        }
+    }
 
     public User getUser(String login, String password) {
         User user = null;
@@ -56,7 +56,7 @@ public class DatabaseHandler {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, hashedPassword);
             ResultSet resultSet = preparedStatement.executeQuery();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 int userId = resultSet.getInt("id_user");
                 String userName = resultSet.getString("username");
                 String loginFromDatabase = resultSet.getString("login");
@@ -70,6 +70,7 @@ public class DatabaseHandler {
         }
         return user;
     }
+
 }
 
 
