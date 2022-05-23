@@ -42,12 +42,13 @@ public class AddInfoUser implements Initializable {
 
     public void addInfo(){
         try {
-            String sql = "insert into info_user (id_user,PIB,address,number_phone, name_type)values(?,?,?,?)";
+            String sql = "insert into info_user (id_user,PIB,address,number_phone)values(?,?,?,?)";
             pst = connection.prepareStatement(sql);
             pst.setInt(1,Const.user.getUserId());
             pst.setString(2, PIBtxt.getText());
             pst.setString(3,addressTxt.getText());
             pst.setString(4, numberPhoneTxt.getText());
+            pst.execute();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Успіх");
             alert.setContentText("Дані було успішно додано");
@@ -62,11 +63,10 @@ public class AddInfoUser implements Initializable {
             }
             Parent root = loader.getRoot();
             stage.setScene(new Scene(root));
-
         }catch (Exception e){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Похибка");
-            alert.setContentText("Дані було успішно додано");
+            alert.setContentText("Дані небуло додано");
             alert.show();
         }
 

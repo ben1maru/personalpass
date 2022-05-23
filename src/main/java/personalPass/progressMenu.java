@@ -217,6 +217,7 @@ public class progressMenu implements Initializable {
                if(u.getWebsite_or_app().equals(text)){
                    tablePassword.getItems().clear();
                    tablePassword.getItems().add(u);
+                   filterField.setText("");
                }else
                    UpdateTable();
            }

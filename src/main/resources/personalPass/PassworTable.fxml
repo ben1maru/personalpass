@@ -58,6 +58,6 @@
             <ChoiceBox fx:id="typesChoiceBox" layoutX="30.0" layoutY="173.0" prefHeight="25.0" prefWidth="179.0" style="-fx-background-radius: 15; -fx-border-color: black; -fx-border-radius: 15;" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" />
          </children>
       </AnchorPane>
-      <Button fx:id="addInfoForUser" layoutX="814.0" layoutY="450.0" mnemonicParsing="false" text="Додади інформацію про користувача" />
+      <Button fx:id="addInfoForUser" layoutX="762.0" layoutY="447.0" mnemonicParsing="false" text="Додади інформацію про користувача" AnchorPane.rightAnchor="10.0" />
    </children>
 </AnchorPane>
