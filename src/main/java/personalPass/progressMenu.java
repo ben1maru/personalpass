@@ -1,12 +1,17 @@
 package personalPass;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -57,13 +62,17 @@ public class progressMenu implements Initializable {
 
     @FXML
     private TextField isLoginTxt;
-
+    @FXML
+    private TextField filterField;
     @FXML
     private TextField isPasswordTxt;
-
+    @FXML
+    private Button isBtnSearch;
 
     //////////////////
-    List<UserTable> listM;
+
+    ObservableList<UserTable> listM;
+    ObservableList<UserTable> dataSearch;
     UserTable selectedUserTable = null;
     Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
@@ -94,6 +103,7 @@ public class progressMenu implements Initializable {
 
             JOptionPane.showMessageDialog(null, "Пароль доданий");
             UpdateTable();
+
             Clean();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -104,6 +114,7 @@ public class progressMenu implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         typesChoiceBox.getItems().addAll(Types.getAllTypes());
         UpdateTable();
+        search();
         addPasswordBtn.setOnAction(actionEvent -> {
             addPass();
         });
@@ -138,7 +149,6 @@ public class progressMenu implements Initializable {
         tablePassword.getItems().addAll(listM);
         ////////////////////////////
     }
-
     public void Edit() {
         try {
             if (selectedUserTable == null) {
@@ -152,10 +162,10 @@ public class progressMenu implements Initializable {
             pst.setString(3, isPasswordTxt.getText());
             pst.setString(4, typesChoiceBox.getValue());
             pst.setInt(5, selectedUserTable.id_pass.getValue());
-
             pst.execute();
             JOptionPane.showMessageDialog(null, "Дані оновлено");
             UpdateTable();
+
             Clean();
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,13 +194,40 @@ public class progressMenu implements Initializable {
             pst.execute();
             JOptionPane.showMessageDialog(null, "Видалено");
             UpdateTable();
+
             Clean();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
             e.printStackTrace();
         }
     }
-
+    public void search() {
+        tableWebOrAppCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("website_or_app"));
+        tableLoginCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("login"));
+        tablePasswordCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("password"));
+        tableNameTypeCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("name_type"));
+        dataSearch=mySqlConnect.getDataUsersTable();
+        tablePassword.getItems().addAll(dataSearch);
+        FilteredList<UserTable>filteredData= new FilteredList<>(dataSearch,b->true);
+        filterField.textProperty().addListener((observable,oldValue,newValue)->{
+            filteredData.setPredicate(userTable -> {
+                if(newValue ==null || newValue.isEmpty()){
+                    return true;
+                }
+                String lowerCaseFilret = newValue.toLowerCase();
+                if(userTable.getWebsite_or_app().toLowerCase().indexOf(lowerCaseFilret)!=1){
+                    return true;
+                }else if(userTable.getLogin().toLowerCase().indexOf(lowerCaseFilret)!=1){
+                    return true;
+                }else {
+                    return false;
+                }
+            });
+        });
+        SortedList<UserTable> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
+        tablePassword.getItems().addAll(selectedUserTable);
+    }
 
     public void Clean() {
         isWebOr.setText("");

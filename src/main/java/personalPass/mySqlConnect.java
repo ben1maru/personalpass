@@ -26,10 +26,10 @@ public class mySqlConnect {
         }
     }
 
-    public static List<UserTable> getDataUsersTable() {
+    public static ObservableList<UserTable> getDataUsersTable() {
 
         Connection conn = ConnectDb();
-        List<UserTable> list = new ArrayList<>();
+        ObservableList<UserTable> list =FXCollections.observableArrayList();
         try {
             String statement = "SELECT id_password, id_user, website_or_app, login,password,name_type FROM `data_password` WHERE id_user = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(statement);

@@ -20,6 +20,37 @@ public class UserTable {
         return name_type;
     }
 
+    public String getWebsite_or_app() {
+        return website_or_app.get();
+    }
+
+    public void setWebsite_or_app(String website_or_app) {
+        this.website_or_app.set(website_or_app);
+    }
+
+    public String getLogin() {
+        return login.get();
+    }
+
+    public void setLogin(String login) {
+        this.login.set(login);
+    }
+
+    public String getPassword() {
+        return password.get();
+    }
+
+    public void setPassword(String password) {
+        this.password.set(password);
+    }
+
+    public String getName_type() {
+        return name_type.get();
+    }
+
+    public StringProperty name_typeProperty() {
+        return name_type;
+    }
 
     public int getId_pass() {
         return id_pass.get();
