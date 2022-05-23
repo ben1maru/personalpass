@@ -68,7 +68,7 @@ public class progressMenu implements Initializable {
     private Button addInfoForUser;
     //////////////////
   List<UserTable> listM;
-
+List<UserTable> listF;
     UserTable selectedUserTable = null;
     Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
@@ -175,7 +175,6 @@ public class progressMenu implements Initializable {
             pst.execute();
             JOptionPane.showMessageDialog(null, "Дані оновлено");
             UpdateTable();
-
             Clean();
         } catch (Exception e) {
             e.printStackTrace();
@@ -212,16 +211,24 @@ public class progressMenu implements Initializable {
         }
     }
        public void search(String text) {
-           listM = mySqlConnect.getDataUsersTable();
-           for (UserTable u:listM){
-               if(u.getWebsite_or_app().equals(text)){
+           if(filterField.getText().equals("")) {
+               listM = mySqlConnect.getDataUsersTable();
+               listF = listM;
+               UpdateTable();
+           }
+
+           for (UserTable u : listF){
+               if(u.getWebsite_or_app().toLowerCase().equals(text)){
                    tablePassword.getItems().clear();
                    tablePassword.getItems().add(u);
-                   filterField.setText("");
-               }else
-                   UpdateTable();
+               }
            }
    }
+
+    public progressMenu() {
+        listM = mySqlConnect.getDataUsersTable();
+        listF = listM;
+    }
 
     public void Clean() {
         isWebOr.setText("");
