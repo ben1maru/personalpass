@@ -42,24 +42,20 @@ public class progressMenu implements Initializable {
     private TableColumn<UserTable, String> tableLoginCol;
     @FXML
     private TableColumn<UserTable, String> tablePasswordCol;
+    ////////////
     @FXML
     private Button isBackBtn;
-
     @FXML
     private Button addPasswordBtn;
-
     @FXML
     private ChoiceBox<String> typesChoiceBox;
-
     @FXML
     private Button isUpdateBtn;
-
     @FXML
     private Button isDeleteBtn;
-
+    //////////
     @FXML
     private TextField isWebOr;
-
     @FXML
     private TextField isLoginTxt;
     @FXML
@@ -68,11 +64,11 @@ public class progressMenu implements Initializable {
     private TextField isPasswordTxt;
     @FXML
     private Button isBtnSearch;
-
+    @FXML
+    private Button addInfoForUser;
     //////////////////
+  List<UserTable> listM;
 
-    ObservableList<UserTable> listM;
-    ObservableList<UserTable> dataSearch;
     UserTable selectedUserTable = null;
     Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
@@ -103,7 +99,6 @@ public class progressMenu implements Initializable {
 
             JOptionPane.showMessageDialog(null, "Пароль доданий");
             UpdateTable();
-
             Clean();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
@@ -114,7 +109,22 @@ public class progressMenu implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         typesChoiceBox.getItems().addAll(Types.getAllTypes());
         UpdateTable();
-        search();
+        addInfoForUser.setOnAction(event -> {
+            Stage stage = (Stage) addInfoForUser.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("addInfoUser.fxml"));
+            try {
+                loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Parent root = loader.getRoot();
+            stage.setScene(new Scene(root));
+            System.out.println("login");
+        });
+        isBtnSearch.setOnAction(event -> {
+            search(filterField.getText());
+        });
         addPasswordBtn.setOnAction(actionEvent -> {
             addPass();
         });
@@ -201,33 +211,16 @@ public class progressMenu implements Initializable {
             e.printStackTrace();
         }
     }
-    public void search() {
-        tableWebOrAppCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("website_or_app"));
-        tableLoginCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("login"));
-        tablePasswordCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("password"));
-        tableNameTypeCol.setCellValueFactory(new PropertyValueFactory<UserTable,String>("name_type"));
-        dataSearch=mySqlConnect.getDataUsersTable();
-        tablePassword.getItems().addAll(dataSearch);
-        FilteredList<UserTable>filteredData= new FilteredList<>(dataSearch,b->true);
-        filterField.textProperty().addListener((observable,oldValue,newValue)->{
-            filteredData.setPredicate(userTable -> {
-                if(newValue ==null || newValue.isEmpty()){
-                    return true;
-                }
-                String lowerCaseFilret = newValue.toLowerCase();
-                if(userTable.getWebsite_or_app().toLowerCase().indexOf(lowerCaseFilret)!=1){
-                    return true;
-                }else if(userTable.getLogin().toLowerCase().indexOf(lowerCaseFilret)!=1){
-                    return true;
-                }else {
-                    return false;
-                }
-            });
-        });
-        SortedList<UserTable> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
-        tablePassword.getItems().addAll(selectedUserTable);
-    }
+       public void search(String text) {
+           listM = mySqlConnect.getDataUsersTable();
+           for (UserTable u:listM){
+               if(u.getWebsite_or_app().equals(text)){
+                   tablePassword.getItems().clear();
+                   tablePassword.getItems().add(u);
+               }else
+                   UpdateTable();
+           }
+   }
 
     public void Clean() {
         isWebOr.setText("");

@@ -65,7 +65,7 @@ public class LogIn {
             Const.user = userFromDatabase;
             Stage stage = (Stage) loginIn.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("progressMenu.fxml"));
+            loader.setLocation(getClass().getResource("PassworTable.fxml"));
             try {
                 loader.load();
             } catch (IOException e) {
