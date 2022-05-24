@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class progressMenu implements Initializable {
@@ -67,8 +68,8 @@ public class progressMenu implements Initializable {
     @FXML
     private Button addInfoForUser;
     //////////////////
-  List<UserTable> listM;
-List<UserTable> listF;
+ ObservableList <UserTable> listM;
+
     UserTable selectedUserTable = null;
     Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
@@ -109,6 +110,9 @@ List<UserTable> listF;
     public void initialize(URL url, ResourceBundle rb) {
         typesChoiceBox.getItems().addAll(Types.getAllTypes());
         UpdateTable();
+        search();
+
+
         addInfoForUser.setOnAction(event -> {
             Stage stage = (Stage) addInfoForUser.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader();
@@ -122,9 +126,6 @@ List<UserTable> listF;
             stage.setScene(new Scene(root));
             System.out.println("login");
         });
-        isBtnSearch.setOnAction(event -> {
-            search(filterField.getText());
-        });
         addPasswordBtn.setOnAction(actionEvent -> {
             addPass();
         });
@@ -132,7 +133,18 @@ List<UserTable> listF;
             Edit();
         });
         isDeleteBtn.setOnAction(actionEvent -> {
-            DeleteUser();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Видалити");
+            alert.setHeaderText("Ви точно хочете видалити?");
+            alert.setResizable(false);
+            Optional<ButtonType> result = alert.showAndWait();
+            ButtonType button = result.orElse(ButtonType.CANCEL);
+            if (button == ButtonType.OK) {
+                DeleteUser();
+            } else {
+                System.out.println("canceled");
+            }
+
         });
         isBackBtn.setOnAction(actionEvent -> {
             Stage stage = (Stage) isBackBtn.getScene().getWindow();
@@ -210,25 +222,36 @@ List<UserTable> listF;
             e.printStackTrace();
         }
     }
-       public void search(String text) {
-           if(filterField.getText().equals("")) {
-               listM = mySqlConnect.getDataUsersTable();
-               listF = listM;
-               UpdateTable();
-           }
 
-           for (UserTable u : listF){
-               if(u.getWebsite_or_app().toLowerCase().equals(text)){
-                   tablePassword.getItems().clear();
-                   tablePassword.getItems().add(u);
-               }
-           }
-   }
+        public void search(){
+            FilteredList <UserTable> filteredData = new FilteredList<>(listM, b -> true);
+            filterField.textProperty().addListener((observable, oldValue, newValue) ->
+            {
+                System.out.println("property");
+                filteredData.setPredicate( userTable-> {
+                    if (newValue.isEmpty() || newValue.isBlank() || newValue == null)
+                    {
+                        return true;
+                    }
+                    String searchKeyword = newValue.toLowerCase();
 
-    public progressMenu() {
-        listM = mySqlConnect.getDataUsersTable();
-        listF = listM;
-    }
+                    if(userTable.getWebsite_or_app().toLowerCase().indexOf(searchKeyword) > -1)
+                    {
+                        return true;
+                    }
+                    else if (userTable.getLogin().toLowerCase().indexOf(searchKeyword) > -1)
+                    {
+                        return true;
+                    }
+                    else
+                        return false;
+                });
+            });
+            SortedList<UserTable> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
+            tablePassword.setItems(sortedData);
+        }
+
 
     public void Clean() {
         isWebOr.setText("");
