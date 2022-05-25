@@ -4,9 +4,15 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Заповнення даних про тип паролів
+ */
 public class Types {
 
-
+    /**
+     * Заповнення ліста з таблиці тип
+     * @return
+     */
     public static List<String> getAllTypes() {
         List<String> types = new ArrayList<>();
         String sqlStatement = "SELECT * FROM type_pass";

@@ -8,13 +8,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class mySqlConnect {
     Connection conn = null;
 
+    /**
+     * конект до бд
+     * @return
+     */
     public static Connection ConnectDb() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -26,10 +28,13 @@ public class mySqlConnect {
         }
     }
 
-    public static ObservableList<UserTable> getDataUsersTable() {
-
+    /**
+     * заповнення TableView
+     * @return
+     */
+    public static ObservableList<DateForTable> getDataUsersTable() {
         Connection conn = ConnectDb();
-       ObservableList<UserTable> list = FXCollections.observableArrayList();
+       ObservableList<DateForTable> list = FXCollections.observableArrayList();
         try {
             String statement = "SELECT id_password, id_user, website_or_app, login,password,name_type FROM `data_password` WHERE id_user = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(statement);
@@ -40,7 +45,7 @@ public class mySqlConnect {
             while (resultSet.next()) {
                 System.out.println("here");
                 list.add(
-                        new UserTable(
+                        new DateForTable(
                                 Integer.parseInt(resultSet.getString("id_password")),
                                 Integer.parseInt(resultSet.getString("id_user")),
                                 resultSet.getString("website_or_app"),

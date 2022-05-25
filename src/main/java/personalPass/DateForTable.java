@@ -2,7 +2,10 @@ package personalPass;
 
 import javafx.beans.property.*;
 
-public class UserTable {
+/**
+ * Дані в таблицю TableView
+ */
+public class DateForTable {
 
     public StringProperty website_or_appProperty() {
         return website_or_app;
@@ -87,7 +90,16 @@ public class UserTable {
         this.name_type.set(name_type);
     }
 
-    public UserTable(int id_pass, int id_user, String website_or_app, String login, String name_type, String password) {
+    /**
+     * Конструктор для заповнення TableView
+     * @param id_pass
+     * @param id_user
+     * @param website_or_app
+     * @param login
+     * @param name_type
+     * @param password
+     */
+    public DateForTable(int id_pass, int id_user, String website_or_app, String login, String name_type, String password) {
         this.id_pass.setValue(id_pass);
         this.id_user.setValue(id_user);
         this.website_or_app.setValue(website_or_app);

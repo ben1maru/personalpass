@@ -1,5 +1,8 @@
 package personalPass;
 
+/**
+ * Клас з константами для реєстрації і реєстрації
+ */
 public class Const {
     public static final String PPM_TABLE = "users";
     public static final String PPM_ID = "id_user";

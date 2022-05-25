@@ -32,6 +32,9 @@ public class LogIn {
     @FXML
     private Button registration;
 
+    /**
+     * ініціалізація компонентів
+      */
     @FXML
     void initialize() {
         loginIn.setOnAction(event -> {
@@ -58,6 +61,11 @@ public class LogIn {
         });
     }
 
+    /**
+     * Авторизація користувача
+     * @param loginText
+     * @param passwordTxt
+     */
     public void loginUser(String loginText, String passwordTxt) {
         DatabaseHandler dbHandler = new DatabaseHandler();
         User userFromDatabase = dbHandler.getUser(loginText, passwordTxt);

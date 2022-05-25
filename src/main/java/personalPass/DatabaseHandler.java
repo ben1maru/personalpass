@@ -5,11 +5,18 @@ import java.sql.*;
 import javafx.scene.control.Alert;
 import org.apache.commons.codec.digest.DigestUtils;
 
-
-
+/**
+ * Підключення до бд реєстрація і авторизація
+ */
 public class DatabaseHandler {
     Connection dbConnection;
 
+    /**
+     * Підключення до бд
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Connection getDbConnection() throws ClassNotFoundException, SQLException {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -19,6 +26,10 @@ public class DatabaseHandler {
 
     }
 
+    /**
+     * Реєстраці користувача
+     * @param user
+     */
     public void signUpUser(User user) {
         String insert = "INSERT INTO " + Const.PPM_TABLE + "(" +
                 Const.PPM_USERNAME + "," + Const.PPM_LOGIN + "," +
@@ -46,6 +57,12 @@ public class DatabaseHandler {
         }
     }
 
+    /**
+     * Авторизація користувача
+     * @param login
+     * @param password
+     * @return
+     */
     public User getUser(String login, String password) {
         User user = null;
         String hashedPassword = DigestUtils.sha1Hex(password);

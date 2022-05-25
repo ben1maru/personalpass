@@ -30,23 +30,32 @@ public class AddInfoUser implements Initializable {
     @FXML
     private Button addBtn;
 
+    /**
+     * Ініціалізація класу
+     * @param url
+     * @param resourceBundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addBtn.setOnAction(event -> {
             addInfo();
         });
     }
+
     ResultSet rs = null;
     PreparedStatement pst = null;
     Connection connection = mySqlConnect.ConnectDb();
 
-    public void addInfo(){
+    /**
+     * Додавання даних про юзера
+     */
+    public void addInfo() {
         try {
             String sql = "insert into info_user (id_user,PIB,address,number_phone)values(?,?,?,?)";
             pst = connection.prepareStatement(sql);
-            pst.setInt(1,Const.user.getUserId());
+            pst.setInt(1, Const.user.getUserId());
             pst.setString(2, PIBtxt.getText());
-            pst.setString(3,addressTxt.getText());
+            pst.setString(3, addressTxt.getText());
             pst.setString(4, numberPhoneTxt.getText());
             pst.execute();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -63,7 +72,7 @@ public class AddInfoUser implements Initializable {
             }
             Parent root = loader.getRoot();
             stage.setScene(new Scene(root));
-        }catch (Exception e){
+        } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Похибка");
             alert.setContentText("Дані небуло додано");

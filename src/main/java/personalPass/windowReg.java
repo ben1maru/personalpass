@@ -43,6 +43,9 @@ public class windowReg {
     @FXML
     private Button isBack;
     @FXML
+    /**
+     * Ініціалізація методів класу
+     */
     void initialize() {
         DatabaseHandler databaseHandler = new DatabaseHandler();
         signUp.setOnAction(event -> {
@@ -62,6 +65,9 @@ public class windowReg {
         });
     }
 
+    /**
+     * Реэстрація користувача
+     */
     private void signUpNewUser () {
         DatabaseHandler databaseHandler = new DatabaseHandler();
         String userNameReg = userName.getText();

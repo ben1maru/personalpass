@@ -1,7 +1,6 @@
 package personalPass;
 
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -11,7 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -21,8 +19,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class progressMenu implements Initializable {
@@ -34,15 +30,15 @@ public class progressMenu implements Initializable {
     private URL location;
     ///////////////
     @FXML
-    private TableView<UserTable> tablePassword;
+    private TableView<DateForTable> tablePassword;
     @FXML
-    private TableColumn<UserTable, String> tableWebOrAppCol;
+    private TableColumn<DateForTable, String> tableWebOrAppCol;
     @FXML
-    private TableColumn<UserTable, String> tableNameTypeCol;
+    private TableColumn<DateForTable, String> tableNameTypeCol;
     @FXML
-    private TableColumn<UserTable, String> tableLoginCol;
+    private TableColumn<DateForTable, String> tableLoginCol;
     @FXML
-    private TableColumn<UserTable, String> tablePasswordCol;
+    private TableColumn<DateForTable, String> tablePasswordCol;
     ////////////
     @FXML
     private Button isBackBtn;
@@ -68,14 +64,17 @@ public class progressMenu implements Initializable {
     @FXML
     private Button addInfoForUser;
     //////////////////
- ObservableList <UserTable> listM;
+ ObservableList <DateForTable> listM;
 
-    UserTable selectedUserTable = null;
+    DateForTable selectedDateForTable = null;
     Connection conn = mySqlConnect.ConnectDb();
     ResultSet rs = null;
     PreparedStatement pst = null;
 
     @FXML
+    /**
+     * Додавання даних в бд
+     */
     private void addPass() {
         if (isWebOr.getText().equals("") ||
                 isLoginTxt.getText().equals("") ||
@@ -102,15 +101,22 @@ public class progressMenu implements Initializable {
             UpdateTable();
             Clean();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
+            UpdateTable();
+
         }
     }
 
+    /**
+     * Ініціалізаці всіх методів
+     * @param url
+     * @param rb
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         typesChoiceBox.getItems().addAll(Types.getAllTypes());
+
         UpdateTable();
-        search();
+         //   search();
 
 
         addInfoForUser.setOnAction(event -> {
@@ -133,17 +139,7 @@ public class progressMenu implements Initializable {
             Edit();
         });
         isDeleteBtn.setOnAction(actionEvent -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Видалити");
-            alert.setHeaderText("Ви точно хочете видалити?");
-            alert.setResizable(false);
-            Optional<ButtonType> result = alert.showAndWait();
-            ButtonType button = result.orElse(ButtonType.CANCEL);
-            if (button == ButtonType.OK) {
-                DeleteUser();
-            } else {
-                System.out.println("canceled");
-            }
+            DeleteUser();
 
         });
         isBackBtn.setOnAction(actionEvent -> {
@@ -161,6 +157,9 @@ public class progressMenu implements Initializable {
 
     }
 
+    /**
+     * Оновлення і заповнення доних в таблицю TableView
+     */
     public void UpdateTable() {
         tableWebOrAppCol.setCellValueFactory(param -> param.getValue().website_or_appProperty());
         tableLoginCol.setCellValueFactory(param -> param.getValue().loginProperty());
@@ -171,9 +170,13 @@ public class progressMenu implements Initializable {
         tablePassword.getItems().addAll(listM);
         ////////////////////////////
     }
+
+    /**
+     * Оновлення даних в бд
+     */
     public void Edit() {
         try {
-            if (selectedUserTable == null) {
+            if (selectedDateForTable == null) {
                 return;
             }
             conn = mySqlConnect.ConnectDb();
@@ -183,63 +186,74 @@ public class progressMenu implements Initializable {
             pst.setString(2, isLoginTxt.getText());
             pst.setString(3, isPasswordTxt.getText());
             pst.setString(4, typesChoiceBox.getValue());
-            pst.setInt(5, selectedUserTable.id_pass.getValue());
+            pst.setInt(5, selectedDateForTable.id_pass.getValue());
             pst.execute();
             JOptionPane.showMessageDialog(null, "Дані оновлено");
             UpdateTable();
             Clean();
         } catch (Exception e) {
+
             e.printStackTrace();
+            UpdateTable();
         }
     }
 
+    /**
+     * Вибір і передаванян даних в TextBox з TableView по кліку
+     * @param mouseEvent
+     */
     public void getSelect(MouseEvent mouseEvent) {
-        selectedUserTable = tablePassword.getSelectionModel().getSelectedItem();
-        if (selectedUserTable == null) {
+        selectedDateForTable = tablePassword.getSelectionModel().getSelectedItem();
+        if (selectedDateForTable == null) {
             return;
         }
-        isWebOr.setText(tableWebOrAppCol.getCellData(selectedUserTable));
-        isLoginTxt.setText(tableLoginCol.getCellData(selectedUserTable));
-        isPasswordTxt.setText(tablePasswordCol.getCellData(selectedUserTable));
-        typesChoiceBox.setValue(tableNameTypeCol.getCellData(selectedUserTable));
+        isWebOr.setText(tableWebOrAppCol.getCellData(selectedDateForTable));
+        isLoginTxt.setText(tableLoginCol.getCellData(selectedDateForTable));
+        isPasswordTxt.setText(tablePasswordCol.getCellData(selectedDateForTable));
+        typesChoiceBox.setValue(tableNameTypeCol.getCellData(selectedDateForTable));
     }
 
+    /**
+     * Видалення даних з бд
+     */
     public void DeleteUser() {
-        if (selectedUserTable == null) {
+        if (selectedDateForTable == null) {
             return;
         }
         String sql = "delete from data_password where id_password = ? ";
         try {
             pst = conn.prepareStatement(sql);
-            pst.setInt(1, selectedUserTable.id_pass.getValue());
+            pst.setInt(1, selectedDateForTable.id_pass.getValue());
             pst.execute();
             JOptionPane.showMessageDialog(null, "Видалено");
             UpdateTable();
-
             Clean();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
             e.printStackTrace();
+            UpdateTable();
         }
     }
 
-        public void search(){
-            FilteredList <UserTable> filteredData = new FilteredList<>(listM, b -> true);
+    /**
+     * Пошук посимволбно
+     */
+    public void search(){
+            FilteredList <DateForTable> filteredData = new FilteredList<>(listM, b -> true);
             filterField.textProperty().addListener((observable, oldValue, newValue) ->
             {
                 System.out.println("property");
-                filteredData.setPredicate( userTable-> {
+                filteredData.setPredicate(dateForTable -> {
                     if (newValue.isEmpty() || newValue.isBlank() || newValue == null)
                     {
                         return true;
                     }
                     String searchKeyword = newValue.toLowerCase();
 
-                    if(userTable.getWebsite_or_app().toLowerCase().indexOf(searchKeyword) > -1)
+                    if(dateForTable.getWebsite_or_app().toLowerCase().indexOf(searchKeyword) > -1)
                     {
                         return true;
                     }
-                    else if (userTable.getLogin().toLowerCase().indexOf(searchKeyword) > -1)
+                    else if (dateForTable.getLogin().toLowerCase().indexOf(searchKeyword) > -1)
                     {
                         return true;
                     }
@@ -247,9 +261,11 @@ public class progressMenu implements Initializable {
                         return false;
                 });
             });
-            SortedList<UserTable> sortedData = new SortedList<>(filteredData);
+            SortedList<DateForTable> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
             tablePassword.setItems(sortedData);
+            tablePassword.getItems().clear();
+            UpdateTable();
         }
 
 

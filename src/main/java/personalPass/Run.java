@@ -9,6 +9,9 @@ import java.io.IOException;
 
 public class Run extends Application {
     @Override
+    /**
+     * Запуск головного меню
+     */
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Run.class.getResource("LogIn.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
@@ -16,6 +19,10 @@ public class Run extends Application {
         stage.show();
     }
 
+    /**
+     * Запуск меню
+      * @param args
+     */
     public static void main(String[] args) {
         launch();
     }
