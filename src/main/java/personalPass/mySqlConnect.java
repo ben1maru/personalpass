@@ -43,7 +43,7 @@ public class mySqlConnect {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                System.out.println("here");
+                System.out.println("add to table");
                 list.add(
                         new DateForTable(
                                 Integer.parseInt(resultSet.getString("id_password")),

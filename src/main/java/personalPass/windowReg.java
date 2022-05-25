@@ -74,6 +74,10 @@ public class windowReg {
         String passwordReg = password.getText();
         String loginReg = login.getText();
         String returnPass = returnPassword.getText();
+        if(password.getText().length()<8){
+            JOptionPane.showMessageDialog(null, "Пароль дуже коротикий");
+            return;
+        }
         if (!password.getText().equals(returnPassword.getText())) {
             JOptionPane.showMessageDialog(null, "Паролі не співпадають");
             return;

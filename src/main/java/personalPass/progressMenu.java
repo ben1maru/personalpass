@@ -96,7 +96,7 @@ public class progressMenu implements Initializable {
             pst.setString(4, isPasswordTxt.getText());
             pst.setString(5, typesChoiceBox.getValue());
             pst.execute();
-
+            System.out.println("add pass");
             JOptionPane.showMessageDialog(null, "Пароль доданий");
             UpdateTable();
             Clean();
@@ -199,8 +199,8 @@ public class progressMenu implements Initializable {
     }
 
     /**
-     * Вибір і передаванян даних в TextBox з TableView по кліку
-     * @param mouseEvent
+     * Вибір і передавання даних в TextBox з TableView по кліку
+     * @param mouseEvent по кліку миші
      */
     public void getSelect(MouseEvent mouseEvent) {
         selectedDateForTable = tablePassword.getSelectionModel().getSelectedItem();
@@ -228,6 +228,7 @@ public class progressMenu implements Initializable {
             JOptionPane.showMessageDialog(null, "Видалено");
             UpdateTable();
             Clean();
+            System.out.println("delete");
         } catch (Exception e) {
             e.printStackTrace();
             UpdateTable();
@@ -235,13 +236,13 @@ public class progressMenu implements Initializable {
     }
 
     /**
-     * Пошук посимволбно
+     * Пошук посимвольно
      */
     public void search(){
             FilteredList <DateForTable> filteredData = new FilteredList<>(listM, b -> true);
             filterField.textProperty().addListener((observable, oldValue, newValue) ->
             {
-                System.out.println("property");
+                System.out.println("search");
                 filteredData.setPredicate(dateForTable -> {
                     if (newValue.isEmpty() || newValue.isBlank() || newValue == null)
                     {
@@ -264,11 +265,14 @@ public class progressMenu implements Initializable {
             SortedList<DateForTable> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
             tablePassword.setItems(sortedData);
+        System.out.println("here");
             tablePassword.getItems().clear();
             tablePassword.getItems().addAll(listM);
         }
 
-
+    /**
+     * Очистка полів TextBox
+     */
     public void Clean() {
         isWebOr.setText("");
         isLoginTxt.setText("");
