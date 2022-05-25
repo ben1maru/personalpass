@@ -265,7 +265,7 @@ public class progressMenu implements Initializable {
             sortedData.comparatorProperty().bind(tablePassword.comparatorProperty());
             tablePassword.setItems(sortedData);
             tablePassword.getItems().clear();
-            UpdateTable();
+            tablePassword.getItems().addAll(listM);
         }
 
 
