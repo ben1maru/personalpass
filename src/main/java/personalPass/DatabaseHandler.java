@@ -46,15 +46,12 @@ public class DatabaseHandler {
             alert.setContentText("Дані було успішно додано");
             alert.show();
         } catch (Exception e) {
-            if (e instanceof SQLException)
-                if (e.getMessage().equals("Duplicate entry '" + user.getLogin() + "' for key 'PRIMARY'")) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setHeaderText("Помилка");
-                    alert.setContentText("У вас вже є такий запис");
+                    alert.setContentText("Такий користувач уже існує");
                     alert.show();
-                }
-            e.printStackTrace();
         }
+        return;
     }
 
     /**

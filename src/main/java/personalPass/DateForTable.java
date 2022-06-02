@@ -85,6 +85,20 @@ public class DateForTable {
     public IntegerProperty id_pass = new SimpleIntegerProperty();
     public IntegerProperty id_user = new SimpleIntegerProperty();
     public StringProperty name_type = new SimpleStringProperty();
+    public StringProperty name_application = new SimpleStringProperty();
+    public String getName_application() {
+        return name_application.get();
+    }
+
+    public StringProperty name_applicationProperty() {
+        return name_application;
+    }
+
+    public void setName_application(String name_application) {
+        this.name_application.set(name_application);
+    }
+
+
 
     public void setName_type(String name_type) {
         this.name_type.set(name_type);
@@ -99,13 +113,14 @@ public class DateForTable {
      * @param name_type
      * @param password
      */
-    public DateForTable(int id_pass, int id_user, String website_or_app, String login, String name_type, String password) {
+    public DateForTable(int id_pass, int id_user, String website_or_app, String login, String name_type, String password,String name_application) {
         this.id_pass.setValue(id_pass);
         this.id_user.setValue(id_user);
         this.website_or_app.setValue(website_or_app);
         this.login.setValue(login);
         this.name_type.setValue(name_type);
         this.password.setValue(password);
+        this.name_application.setValue(name_application);
 
     }
 

@@ -39,6 +39,8 @@ public class progressMenu implements Initializable {
     private TableColumn<DateForTable, String> tableLoginCol;
     @FXML
     private TableColumn<DateForTable, String> tablePasswordCol;
+    @FXML
+    private TableColumn<DateForTable, String> tableCategoryCol;
     ////////////
     @FXML
     private Button isBackBtn;
@@ -60,9 +62,7 @@ public class progressMenu implements Initializable {
     @FXML
     private TextField isPasswordTxt;
     @FXML
-    private Button isBtnSearch;
-    @FXML
-    private Button addInfoForUser;
+    private ChoiceBox<String> choiceCategory;
     //////////////////
  ObservableList <DateForTable> listM;
 
@@ -79,7 +79,7 @@ public class progressMenu implements Initializable {
         if (isWebOr.getText().equals("") ||
                 isLoginTxt.getText().equals("") ||
                 isPasswordTxt.getText().equals("") ||
-                typesChoiceBox.getValue() == null) {
+                typesChoiceBox.getValue() == null|| choiceCategory.getValue() ==null) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setContentText("Ви не ввели всі потрібні дані");
             alert.show();
@@ -87,7 +87,7 @@ public class progressMenu implements Initializable {
         }
 
         conn = mySqlConnect.ConnectDb();
-        String sql = "insert into data_password (id_user,website_or_app,login,password, name_type)values(?,?,?,?,?)";
+        String sql = "insert into data_password (id_user,website_or_app,login,password, name_type,name_applications)values(?,?,?,?,?,?)";
         try {
             pst = conn.prepareStatement(sql);
             pst.setInt(1, Const.user.getUserId());
@@ -95,6 +95,7 @@ public class progressMenu implements Initializable {
             pst.setString(3, isLoginTxt.getText());
             pst.setString(4, isPasswordTxt.getText());
             pst.setString(5, typesChoiceBox.getValue());
+            pst.setString(6,choiceCategory.getValue());
             pst.execute();
             System.out.println("add pass");
             JOptionPane.showMessageDialog(null, "Пароль доданий");
@@ -114,24 +115,12 @@ public class progressMenu implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         typesChoiceBox.getItems().addAll(Types.getAllTypes());
-
+        choiceCategory.getItems().addAll(Application.getAllApplication());
         UpdateTable();
          //   search();
 
 
-        addInfoForUser.setOnAction(event -> {
-            Stage stage = (Stage) addInfoForUser.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("addInfoUser.fxml"));
-            try {
-                loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Parent root = loader.getRoot();
-            stage.setScene(new Scene(root));
-            System.out.println("login");
-        });
+
         addPasswordBtn.setOnAction(actionEvent -> {
             addPass();
         });
@@ -165,6 +154,7 @@ public class progressMenu implements Initializable {
         tableLoginCol.setCellValueFactory(param -> param.getValue().loginProperty());
         tablePasswordCol.setCellValueFactory(param -> param.getValue().passwordProperty());
         tableNameTypeCol.setCellValueFactory(param -> param.getValue().nameTypeProperty());
+        tableCategoryCol.setCellValueFactory(param->param.getValue().name_applicationProperty());
         listM = mySqlConnect.getDataUsersTable();
         tablePassword.getItems().clear();
         tablePassword.getItems().addAll(listM);
@@ -180,13 +170,14 @@ public class progressMenu implements Initializable {
                 return;
             }
             conn = mySqlConnect.ConnectDb();
-            String sql = "update data_password set website_or_app=?,login=?,password=?,name_type=? where  id_password=?";
+            String sql = "update data_password set website_or_app=?,login=?,password=?,name_type=?, name_applications=? where  id_password=?";
             pst = conn.prepareStatement(sql);
             pst.setString(1, isWebOr.getText());
             pst.setString(2, isLoginTxt.getText());
             pst.setString(3, isPasswordTxt.getText());
             pst.setString(4, typesChoiceBox.getValue());
-            pst.setInt(5, selectedDateForTable.id_pass.getValue());
+            pst.setString(5, choiceCategory.getValue());
+            pst.setInt(6, selectedDateForTable.id_pass.getValue());
             pst.execute();
             JOptionPane.showMessageDialog(null, "Дані оновлено");
             UpdateTable();
@@ -211,6 +202,7 @@ public class progressMenu implements Initializable {
         isLoginTxt.setText(tableLoginCol.getCellData(selectedDateForTable));
         isPasswordTxt.setText(tablePasswordCol.getCellData(selectedDateForTable));
         typesChoiceBox.setValue(tableNameTypeCol.getCellData(selectedDateForTable));
+        choiceCategory.setValue(tableCategoryCol.getCellData(selectedDateForTable));
     }
 
     /**
@@ -255,6 +247,9 @@ public class progressMenu implements Initializable {
                         return true;
                     }
                     else if (dateForTable.getLogin().toLowerCase().indexOf(searchKeyword) > -1)
+                    {
+                        return true;
+                    }       else if (dateForTable.getName_application().toLowerCase().indexOf(searchKeyword) > -1)
                     {
                         return true;
                     }
