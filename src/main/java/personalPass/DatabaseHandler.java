@@ -20,7 +20,7 @@ public class DatabaseHandler {
     public Connection getDbConnection() throws ClassNotFoundException, SQLException {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
-        dbConnection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/personal_password_data?useUnicode=true&characterEncoding=utf8", "root", "");
+        dbConnection = DriverManager.getConnection("jdbc:mysql://pswrd.ceqckz4iym7b.us-east-1.rds.amazonaws.com:3306/personal_password_data?useUnicode=true&characterEncoding=utf8", "root", "rootroot");
         System.out.println(dbConnection);
         return dbConnection;
 
