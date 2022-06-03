@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -19,6 +20,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class progressMenu implements Initializable {
@@ -63,6 +65,13 @@ public class progressMenu implements Initializable {
     private TextField isPasswordTxt;
     @FXML
     private ChoiceBox<String> choiceCategory;
+    //////////
+    @FXML
+    private AnchorPane panelForm;
+    @FXML
+    private AnchorPane panelTable;
+    @FXML
+    private AnchorPane panelBtn;
     //////////////////
  ObservableList <DateForTable> listM;
 
@@ -75,6 +84,33 @@ public class progressMenu implements Initializable {
     /**
      * Додавання даних в бд
      */
+    public void changeColorPeach(){
+        panelForm.setStyle("-fx-background-color: #FBE7B5");
+        panelTable.setStyle("-fx-background-color: #F85C50;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+        panelBtn.setStyle("-fx-background-color: #FE9E76;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+    }
+    public void changeColorViolet(){
+        panelForm.setStyle("-fx-background-color: #FFBEED");
+        panelTable.setStyle("-fx-background-color: #F375F3;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+        panelBtn.setStyle("-fx-background-color: #7C3668;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+    }
+    public void changeColorRed(){
+        panelForm.setStyle("-fx-background-color: #EE3D48");
+        panelTable.setStyle("-fx-background-color: #BC0022;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+        panelBtn.setStyle("-fx-background-color: #B40A1B;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+    }
+    public void changeColorGreen(){
+        panelForm.setStyle("-fx-background-color: #5BFF62");
+        panelTable.setStyle("-fx-background-color: #116315;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+        panelBtn.setStyle("-fx-background-color: #4D8802;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+    }
+    public void changeColorYellow(){
+        panelForm.setStyle("-fx-background-color: #FFFCBB");
+        panelTable.setStyle("-fx-background-color: #F5E027;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+        panelBtn.setStyle("-fx-background-color: #D2AA1B;-fx-background-radius: 10;-fx-border-radius: 10;-fx-border-color: black");
+    }
+
+
     private void addPass() {
         if (isWebOr.getText().equals("") ||
                 isLoginTxt.getText().equals("") ||
@@ -169,6 +205,15 @@ public class progressMenu implements Initializable {
             if (selectedDateForTable == null) {
                 return;
             }
+            if (isWebOr.getText().equals("") ||
+                    isLoginTxt.getText().equals("") ||
+                    isPasswordTxt.getText().equals("") ||
+                    typesChoiceBox.getValue() == null|| choiceCategory.getValue() ==null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Ви не ввели всі потрібні дані");
+                alert.show();
+                return;
+            }
             conn = mySqlConnect.ConnectDb();
             String sql = "update data_password set website_or_app=?,login=?,password=?,name_type=?, name_applications=? where  id_password=?";
             pst = conn.prepareStatement(sql);
@@ -215,12 +260,21 @@ public class progressMenu implements Initializable {
         String sql = "delete from data_password where id_password = ? ";
         try {
             pst = conn.prepareStatement(sql);
-            pst.setInt(1, selectedDateForTable.id_pass.getValue());
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setContentText("Ви дійсно хочете видалити пароль");
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.OK){
+                pst.setInt(1, selectedDateForTable.id_pass.getValue());
             pst.execute();
-            JOptionPane.showMessageDialog(null, "Видалено");
+                Alert alerts = new Alert(Alert.AlertType.INFORMATION);
+                alerts.setContentText("Ви видалили пароль");
+                alerts.showAndWait();
             UpdateTable();
             Clean();
             System.out.println("delete");
+        }else if(option.get()==ButtonType.CANCEL){
+                System.out.println("no delete");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             UpdateTable();
